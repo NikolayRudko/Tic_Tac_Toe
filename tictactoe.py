@@ -7,7 +7,7 @@ def draw_field(matrix):
 
 
 def enter_coordinate():
-    """Inputs and verifies the data. :return coordinate X ans Y"""
+    """Inputs and verifies the data. :return coordinate X and Y"""
     coordinates = input('Enter the coordinates:').split()
     # checking the numbers of arguments
     if len(coordinates) != 2:
@@ -19,7 +19,7 @@ def enter_coordinate():
         return enter_coordinate()
 
     coordinate_x, coordinate_y = map(int, coordinates)
-    # checking for int range 0< number <4
+    # checking for int range 0...4
     if 0 < coordinate_x < 4 and 0 < coordinate_y < 4:
         return coordinate_x - 1, coordinate_y - 1
     else:
@@ -33,20 +33,20 @@ def make_turn(mark, matrix):
 
     if matrix[line][row] != 'X' and matrix[line][row] != 'O':
         matrix[line][row] = mark
-        draw_field(matrix=matrix)
+        draw_field(matrix)
     else:
         print('This cell is occupied! Choose another one!')
-        make_turn(mark=mark, matrix=matrix)
+        make_turn(mark, matrix)
 
 
 def check_lines(matrix):
     """Checking the match line for a match :returns True if there is at least one filled line."""
-    lines = [matrix[0], matrix[1], matrix[2],               # all rows
-             [matrix[0][0], matrix[1][0], matrix[2][0]],    # column 1
-             [matrix[0][1], matrix[1][1], matrix[2][1]],    # column 2
-             [matrix[0][2], matrix[1][2], matrix[2][2]],    # column 3
-             [matrix[0][0], matrix[1][1], matrix[2][2]],    # diagonal 1
-             [matrix[2][0], matrix[1][1], matrix[0][2]],    # diagonal 2
+    lines = [matrix[0], matrix[1], matrix[2],  # all rows
+             [matrix[0][0], matrix[1][0], matrix[2][0]],  # column 1
+             [matrix[0][1], matrix[1][1], matrix[2][1]],  # column 2
+             [matrix[0][2], matrix[1][2], matrix[2][2]],  # column 3
+             [matrix[0][0], matrix[1][1], matrix[2][2]],  # diagonal 1
+             [matrix[2][0], matrix[1][1], matrix[0][2]],  # diagonal 2
              ]
     return any([line.count('X') == 3 or line.count('O') == 3 for line in lines])
 
@@ -56,16 +56,20 @@ def check_field(matrix):
     return any([' ' in i for i in matrix])
 
 
-matrix = [[" "] * 3 for i in range(3)]
-players = ('X', 'O')  # set of players
-player = 1
+def game():
+    matrix = [[" "] * 3 for _ in range(3)]
+    players = ('X', 'O')  # set of players
+    player = 1
 
-draw_field(matrix=matrix)
-while not (check_lines(matrix=matrix) or not check_field(matrix=matrix)):
-    player = (player + 1) % 2  # change players
-    player_mark = players[player]
-    make_turn(mark=player_mark, matrix=matrix)
-if check_lines(matrix=matrix):
-    print('%s wins' % players[player])
-else:
-    print("Draw")
+    draw_field(matrix)
+    while not (check_lines(matrix) or not check_field(matrix)):
+        player = (player + 1) % 2  # change players
+        player_mark = players[player]
+        make_turn(player_mark, matrix)
+    if check_lines(matrix):
+        print(f'{players[player]} wins')
+    else:
+        print("Draw")
+
+
+game()
